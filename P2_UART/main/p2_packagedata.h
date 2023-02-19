@@ -1,12 +1,14 @@
 #ifndef _P2_PACKAGEDATA_H_
 #define _P2_PACKAGEDATA_H_
 #include <inttypes.h>
-
+#define N_PACKAGES 4*2
+#define PAYLOAD_LEN 4
+#define BYTES_PER_PACKAGE 8
 //struct to build a package
 typedef struct UART_Package
 {
     uint8_t header, command, length, end;
-    uint8_t *data;
+    uint8_t data[PAYLOAD_LEN];
     uint32_t crc32;
 } UART_Package;
 
