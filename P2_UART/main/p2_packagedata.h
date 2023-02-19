@@ -11,7 +11,7 @@ typedef struct UART_Package
 } UART_Package;
 
 //returns a struct which contains package data
-UART_Package createPackage(uint8_t header, uint8_t command, uint8_t length, uint8_t *data, uint8_t end);
+void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8_t length, uint8_t dat0, uint8_t dat1, uint8_t dat2, uint8_t dat3, uint8_t fin);
 //function that sends a package to uart
 void sendPackage(UART_Package pack);
 //function that receives a package from uart
