@@ -26,7 +26,7 @@ void app_main()
 
     uartInit1();
     // uartInit(0, 115200, 8, eStop, eParityEven, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
-    // uart_flush(1);
+    uart_flush(1);
     // uart_flush(0);
     while (1)
     {
