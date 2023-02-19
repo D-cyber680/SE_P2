@@ -20,6 +20,21 @@ void uartInit(uart_port_t uart_num, uint32_t baudrate, uint8_t size, uint8_t par
                                  UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 }
 
+void uartInit1()
+{
+    uart_config_t uart_config = {
+        .baud_rate = UARTS_BAUD_RATE,
+        .data_bits = UART_DATA_8_BITS,
+        .parity = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+        .source_clk = UART_SCLK_APB,
+    };
+    uart_param_config(UART_NUM_1, &uart_config);
+    uart_set_pin(UART_NUM_1, UART_TX_PIN2, UART_RX_PIN2, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    uart_driver_install(UART_NUM_1, 1024, 0, 0, NULL, 0);
+}
+
 void delayMs(uint16_t ms)
 {
     vTaskDelay(ms / portTICK_PERIOD_MS);
