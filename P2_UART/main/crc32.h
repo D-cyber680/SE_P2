@@ -1,5 +1,6 @@
 #ifndef _MY_CRC32_H_
 #define _MY_CRC32_H_
+#include <inttypes.h>
 
 #define CRC32_INITIAL_VALUE 0xFFFFFFFF
 #define CRC32_POLYNOMIAL_REPRESENTATION 0x04C11DB7

@@ -65,7 +65,10 @@ void app_main()
     //uint8_t command[3];
     while (1)
     {
-
+        gpio_set_level(LED,1);
+        vTaskDelay(pdMS_TO_TICKS(500));
+        gpio_set_level(LED, 0);
+        vTaskDelay(pdMS_TO_TICKS(500));
         
         // int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
         // if (len == 2 && command[0] == '1' && command[1] == '0')

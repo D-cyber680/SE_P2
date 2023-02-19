@@ -1,5 +1,6 @@
 #ifndef _P2_PACKAGEDATA_H_
 #define _P2_PACKAGEDATA_H_
+#include <inttypes.h>
 
 //struct to build a package
 typedef struct UART_Package
@@ -14,6 +15,6 @@ UART_Package createPackage(uint8_t header, uint8_t command, uint8_t length, uint
 //function that sends a package to uart
 void sendPackage(UART_Package pack);
 //function that receives a package from uart
-receivePackage(UART_Package pack);
+void receivePackage(UART_Package pack);
 
 #endif
