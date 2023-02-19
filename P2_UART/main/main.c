@@ -8,8 +8,9 @@
 #include "string.h"
 #include "stdlib.h"
 
- 
- 
+#define MASTER 0
+#define SLAVE 1
+#define MODE SLAVE
 
 #define TXD_PIN (GPIO_NUM_17)
 #define RXD_PIN (GPIO_NUM_16)
