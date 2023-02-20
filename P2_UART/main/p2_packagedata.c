@@ -19,8 +19,7 @@ void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8
 void sendPackage(uart_port_t uart_num, UART_Package pack, char *str){
 
 }
-void receivePackage(uart_port_t uart_num, UART_Package pack, char *str){
-       
+void receivePackage(uart_port_t uart_num, UART_Package *pack, char *str){
 }
 void PackageToString(UART_Package pack, char *msg_pack)
 {
@@ -40,4 +39,18 @@ void PackageToString(UART_Package pack, char *msg_pack)
     snprintf(buffer, MSG_TAM_STR, "%02X%08X", pack.end, pack.crc32);
     strcat(msg_pack, buffer);
     offset = strlen(msg_pack);
+}
+
+void StringToPackage(UART_Package *pack, char *msg_pack){
+    uint8_t info[8];
+    uint8_t i,c=0;
+    char cad2[2]; //0xAF
+    //5A120000000000B23613A09vû?
+    //5A120000000000B23613A097
+    for(i=0; i<8; i++){
+        strncpy(cad2,msg_pack+c,2);
+        info[i] = strtoul(cad2, NULL, 16);
+        c+=2;
+    }
+    createPackage(pack,info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7]);
 }

@@ -23,7 +23,9 @@ void app_main()
     char secs[20];
     char led_state[20];
     char temperature[20];
-    char str[24];
+    //char str[24];
+    //char str2[24];
+    
         //Crear un apuntador a la estructura Package[0]
     UART_Package *pkgs;
         //Crea 8 package
@@ -41,10 +43,14 @@ void app_main()
     uartInit(PC_UART_PORT,115200,8,0,1,PC_UART_TX_PIN,PC_UART_RX_PIN);
     while (1)
     {
-        PackageToString(pkgs[2], str);
-        uartPuts(0,"\n");
-        uartPuts(0,str);
+        /*MASTER*/
+        sendPackage(UART2_PORT,pkgs[2]);
+        /*SLAVE*/
+        if(receivePackage(UART2_PORT,&pkgs[4])) uartPuts(0,"TRUE");
+        else uartPuts(0,"FALSE");
+        /*Enviamos la cadena del paquete comprimido*/
         delayMs(1000);
+        
         // uart_write_bytes(UART_NUM_1, "10", 2);
         // uart_read_bytes(1, secs, (READ_BUF_SIZE), 20 / portTICK_RATE_MS);
         // uartClrScr(0);
