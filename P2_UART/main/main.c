@@ -35,12 +35,12 @@ uint8_t send_led_state(uint8_t led_state)
     sprintf(led_cad, "led=%d", led_state);
     uartPuts(0, led_cad);
     uartPuts(1, led_cad);
-     return led_state;
+    return led_state;
 }
 // F. comando 0x12
 void send_temp(void)
 {
-    //uint8_t num = rand() % 100;
+    // uint8_t num = rand() % 100;
     char cad[20];
     sprintf(cad, "temp=45");
     uartPuts(0, cad);
