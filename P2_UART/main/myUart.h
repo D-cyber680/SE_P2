@@ -5,11 +5,7 @@
 #include <string.h>
 #include "driver/uart.h"
 
-#define YELLOW 0 // Fixme
-#define GREEN 1  // Fixme
-#define BLUE 2   // Fixme
 
-#define LED (GPIO_NUM_25)
 #define UART_NUM0 (0)
 #define UART_RX_PIN0 (3)
 #define UART_TX_PIN0 (1)
@@ -40,8 +36,10 @@ void uartSetColor(uart_port_t uart_num, uint8_t color);
 void uartGotoxy(uart_port_t uart_num, uint8_t x, uint8_t y);
 void myItoa(uint16_t number, char *str, uint8_t base);
 uint16_t myAtoi(char *str);
-// Utils
-void orderArray(char *str, uint8_t i);
+
+#define YELLOW 0 // Fixme
+#define GREEN 1  // Fixme
+#define BLUE 2   // Fixme
 
 enum
 {
