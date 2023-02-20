@@ -16,10 +16,22 @@ void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8
     mi_pack->end = fin;
     mi_pack->crc32 = calc_crc32(input_arr, sizeof(input_arr));
 }
-void sendPackage(uart_port_t uart_num, UART_Package pack, char *str){
-
+void sendPackage(uart_port_t uart_num, UART_Package pack){
+    char str[24];
+    PackageToString(pack,str);
+    uartPuts(uart_num,str);
 }
-void receivePackage(uart_port_t uart_num, UART_Package *pack, char *str){
+bool receivePackage(uart_port_t uart_num, UART_Package *pack){
+    char str[24];
+    char cpyStr[24];
+    uint32_t dato = pack->crc32;
+    uartGets(uart_num,str);
+    strcpy(str,cpyStr);
+    StringToPackage(pack,str);
+    if(checkCrc32(dato,cpyStr))
+        return 1;
+    else return 0;
+    //PackageToString(pack,str2);
 }
 void PackageToString(UART_Package pack, char *msg_pack)
 {
