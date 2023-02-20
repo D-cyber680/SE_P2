@@ -18,20 +18,35 @@ void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8
 }
 void PackageToString(UART_Package pack, char *msg_pack)
 {
+    // Convertir cada campo a una cadena y almacenarlo en el buffer temporal
     char buffer[MSG_TAM_STR];
     int offset = 0;
-
     // Convertir cada campo a una cadena y almacenarlo en el buffer temporal
     snprintf(buffer, MSG_TAM_STR, "%02X%02X%02X", pack.header, pack.command, pack.length);
-    strcat(msg_pack, buffer);
+    strcpy(msg_pack, buffer);
     offset += strlen(buffer);
     for (int i = 0; i < PAYLOAD_LEN; i++)
     {
         snprintf(buffer, MSG_TAM_STR, "%02X", pack.data[i]);
+        //strcat(msg_pack, buffer);
         strcat(msg_pack + offset, buffer);
         offset += strlen(buffer);
     }
     snprintf(buffer, MSG_TAM_STR, "%02X%08X", pack.end, pack.crc32);
-    strcat(msg_pack + offset, buffer);
-    printf("%s", msg_pack);
+    strcat(msg_pack, buffer);
+    printf("%s",msg_pack);
+}
+
+void StringToPackage(UART_Package *pack, char *msg_pack){
+    uint8_t info[8];
+    uint8_t i,c=0;
+    char cad2[2]; //0xAF
+    //5A120000000000B23613A09vû?
+    //5A120000000000B23613A097
+    for(i=0; i<8; i++){
+        strncpy(cad2,msg_pack+c,2);
+        info[i] = strtoul(cad2, NULL, 16);
+        c+=2;
+    }
+    createPackage(pack,info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7]);
 }
