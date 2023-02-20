@@ -16,3 +16,23 @@ void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8
     mi_pack->end = fin;
     mi_pack->crc32 = calc_crc32(input_arr, sizeof(input_arr));
 }
+
+void PackageToString(UART_Package pack, char *msg_pack)
+{
+    char buffer[MSG_TAM_STR];
+    int offset = 0;
+
+    // Convertir cada campo a una cadena y almacenarlo en el buffer temporal
+    snprintf(buffer, MSG_TAM_STR, "%02X%02X%02X", pack.header, pack.command, pack.length);
+    strcat(msg_pack, buffer);
+    offset += strlen(buffer);
+    for (int i = 0; i < PAYLOAD_LEN; i++)
+    {
+        snprintf(buffer, MSG_TAM_STR, "%02X", pack.data[i]);
+        strcat(msg_pack + offset, buffer);
+        offset += strlen(buffer);
+    }
+    snprintf(buffer, MSG_TAM_STR, "%02X%08X", pack.end, pack.crc32);
+    strcat(msg_pack + offset, buffer);
+    printf("%s", msg_pack);
+}
