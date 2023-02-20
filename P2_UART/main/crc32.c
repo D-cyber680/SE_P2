@@ -27,5 +27,4 @@ int checkCrc32(uint32_t dato, char *cad)
         return 0;
 }
 
-return ~crc;
-}
+ 
