@@ -1,3 +1,4 @@
+#include "driver/uart.h"
 #include "myUart.h"
 
 void uartInit(uart_port_t uart_num, uint32_t baudrate, uint8_t size, uint8_t parity, uint8_t stop, uint8_t txPin, uint8_t rxPin)
@@ -87,7 +88,7 @@ char uartGetchar(uart_port_t uart_num)
         delayMs(10);
     }
     // read byte, no wait
-    uart_read_bytes(UART_NUM0, &c, sizeof(c), 0);
+    uart_read_bytes(uart_num, &c, sizeof(c), 0);
 
     return c;
 }
