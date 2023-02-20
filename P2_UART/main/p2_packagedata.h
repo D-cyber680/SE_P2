@@ -19,7 +19,7 @@ void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8
 void sendPackage(UART_Package pack);
 // function that receives a package from uart
 void receivePackage(UART_Package pack);
-
+void PackageToString(UART_Package pack, char *msg_pack);
 //void package_to_inputCRC32(uint8_t *data_arr,  UART_Package mi_pack);
 
 #endif
