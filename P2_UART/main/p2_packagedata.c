@@ -1,0 +1,58 @@
+#include "p2_packagedata.h"
+#include "myUart.h"
+#include "crc32.h"
+// pkg = (UART_Package *)malloc(N_PACKAGES * sizeof(UART_Package));
+
+void createPackage(UART_Package *mi_pack, uint8_t header, uint8_t command, uint8_t length, uint8_t dat0, uint8_t dat1, uint8_t dat2, uint8_t dat3, uint8_t fin)
+{
+    uint8_t input_arr[] = {header, command, length, dat0, dat1, dat2, dat3, fin};
+    mi_pack->header = header;
+    mi_pack->command = command;
+    mi_pack->length = length;
+    mi_pack->data[0] = dat0;
+    mi_pack->data[1] = dat1;
+    mi_pack->data[2] = dat2;
+    mi_pack->data[3] = dat3;
+    mi_pack->end = fin;
+    mi_pack->crc32 = calc_crc32(input_arr, sizeof(input_arr));
+}
+void sendPackage(uart_port_t uart_num, UART_Package pack, char *str){
+    PackageToString(pack, str);
+    /*Debemos limpiar la basura de los primeros y últimos caracteres (substrayendo la cadena o reoslviendo
+    el problema del formato)*/
+    int len = strlen(str);
+    uart_write_bytes(uart_num, str, len);
+}
+void receivePackage(uart_port_t uart_num, UART_Package pack, char *str){
+    int len = uart_read_bytes(uart_num, str, (READ_BUF_SIZE), MSG_TAM_STR / portTICK_RATE_MS);
+    /*
+        Podríamos ir extrayendo 2 caracteres (byte x byte) y converitrlo a un enetero con stol
+        y luego crear un paquete desde nuestro lado, revisando el crc32 y de ser correcto continuar 
+        con la respuesta.
+    */
+       
+}
+void PackageToString(UART_Package pack, char *msg_pack)
+{
+    char buffer[MSG_TAM_STR];
+    int offset = 0;
+    // Convertir cada campo a una cadena y almacenarlo en el buffer temporal
+    snprintf(buffer, MSG_TAM_STR, "%02X%02X%02X", pack.header, pack.command, pack.length);
+    strcat(msg_pack, buffer);
+    offset += strlen(buffer);
+    for (int i = 0; i < PAYLOAD_LEN; i++)
+    {
+        snprintf(buffer, MSG_TAM_STR, "%02X", pack.data[i]);
+        //strcat(msg_pack, buffer);
+        strcat(msg_pack + offset, buffer);
+        offset += strlen(buffer);
+    }
+    snprintf(buffer, MSG_TAM_STR, "%02X%08X", pack.end, pack.crc32);
+    strcat(msg_pack, buffer);
+    offset = strlen(msg_pack);
+    //msg_pack[offset-2] = '\0';
+    strcat(msg_pack + offset, buffer);
+    //printf("%s", msg_pack);
+}
+
+
