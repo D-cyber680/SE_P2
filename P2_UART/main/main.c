@@ -63,36 +63,40 @@ void app_main()
     uartInit(0, BAUD_RATE, 8, eParityDis, eStop, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
     uart_flush(1);
     uart_flush(0);
-    uint8_t command[3];
+    char msgpack0[24];
     while (1)
     {
-        int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
-        if (len == 2 && command[0] == '1' && command[1] == '0')
-        {
-            uartClrScr(0);
-            uartPuts(0, "Comando: 0x10");
-            uartGotoxy(0, 5, 5);
-            get_time_in_seconds();
-        }
-        else if (len == 2 && command[0] == '1' && command[1] == '1')
-        {
-            uartClrScr(0);
-            uartPuts(0, "Comando: 0x11");
-            uartGotoxy(0, 5, 5);
-            send_led_state(led_state);
-        }
-        else if (len == 2 && command[0] == '1' && command[1] == '2')
-        {
-            uartClrScr(0);
-            uartPuts(0, "Comando: 0x12");
-            uartGotoxy(0, 5, 5);
-            send_temp();
-        }
-        else if (len == 2 && command[0] == '1' && command[1] == '3')
-        {
-            uartClrScr(0);
-            toggle_led_state(&led_state);
-            uartPuts(0, "Comando: 0x13");
-        }
+        int len = uart_read_bytes(UART_NUM_1, msgpack0, 24, pdMS_TO_TICKS(100));
+        uartPuts(0, msgpack0);
+        uartPuts(0, "\n");
+        vTaskDelay(pdMS_TO_TICKS(3000));
+        //     int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
+        //     if (len == 2 && command[0] == '1' && command[1] == '0')
+        //     {
+        //         uartClrScr(0);
+        //         uartPuts(0, "Comando: 0x10");
+        //         uartGotoxy(0, 5, 5);
+        //         get_time_in_seconds();
+        //     }
+        //     else if (len == 2 && command[0] == '1' && command[1] == '1')
+        //     {
+        //         uartClrScr(0);
+        //         uartPuts(0, "Comando: 0x11");
+        //         uartGotoxy(0, 5, 5);
+        //         send_led_state(led_state);
+        //     }
+        //     else if (len == 2 && command[0] == '1' && command[1] == '2')
+        //     {
+        //         uartClrScr(0);
+        //         uartPuts(0, "Comando: 0x12");
+        //         uartGotoxy(0, 5, 5);
+        //         send_temp();
+        //     }
+        //     else if (len == 2 && command[0] == '1' && command[1] == '3')
+        //     {
+        //         uartClrScr(0);
+        //         toggle_led_state(&led_state);
+        //         uartPuts(0, "Comando: 0x13");
+        //     }
     }
 }

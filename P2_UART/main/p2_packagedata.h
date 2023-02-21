@@ -5,7 +5,7 @@
 #define PAYLOAD_LEN 4
 #define BUFFER_SIZE 256
 #define BYTES_PER_PACKAGE 8
-#define MSG_TAM_STR 16
+#define MSG_TAM_STR 256
 //struct to build a package
 typedef struct UART_Package
 {
