@@ -54,6 +54,11 @@ void StringToPackage(UART_Package *pack, char *msg_pack)
     createPackage(pack, info[0], info[1], info[2], info[3], info[4], info[5], info[6], info[7]);
 }
 
+uint32_t getCrc32b(UART_Package pkg)
+{
+    return pkg.crc32;
+}
+
 void showPackage(UART_Package pkg)
 {
     uartPuts(0, "\n");

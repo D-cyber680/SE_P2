@@ -58,9 +58,9 @@ void toggle_led_state(uint8_t *led_state)
 void app_main()
 {
     uint8_t led_state = 0;
-    UART_Package pkgs; 
+    UART_Package *pkgs = malloc(4 * sizeof(UART_Package));
     char msgpacks[N_PACKAGES][MSG_TAM_STR];
-    pkgs = (UART_Package *)malloc(4 * sizeof(UART_Package));
+    
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     uartInit1();
@@ -70,9 +70,22 @@ void app_main()
     
     while (1)
     {
+        // 1) Leer el paquete en forma de cadena
+
+        // 2) Convertir cadena a un paquete y guardar
+
+        //3) Recalcular el crc32 y almacenarlo en el paquete
+
+        //4) Comparar crc32s: 
+        // iguales -> fue recibido correctamente
+        //      ejecutar accion dado el comando
+        //      actualizar paquete
+        //      devolver cadena
+        // distintos -> imprimir que no se recibio correctamente
+
         int len = uart_read_bytes(UART_NUM_1, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
-        StringToPackage(pkgs[0],msgpacks[0]);
-        showPackage(pkgs[0]);
+        StringToPackage(&pkgs[0],msgpacks[0]);
+        //showPackage(pkgs[0]);
         //uartPuts(0, msgpacks[0]);
         //uartPuts(0, "\n");
         vTaskDelay(pdMS_TO_TICKS(3000));

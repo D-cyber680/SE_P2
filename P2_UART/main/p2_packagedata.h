@@ -1,6 +1,7 @@
 #ifndef _P2_PACKAGEDATA_H_
 #define _P2_PACKAGEDATA_H_
 #include <inttypes.h>
+#include "esp_log.h"
 #define N_PACKAGES 4*2
 #define PAYLOAD_LEN 4
 #define BUFFER_SIZE 256
@@ -25,4 +26,5 @@ void sendPackage(UART_Package pack);
 void receivePackage(UART_Package pack);
 //void package_to_inputCRC32(uint8_t *data_arr,  UART_Package mi_pack);
 void StringToPackage(UART_Package *pack, char *msg_pack);
+uint32_t getCrc32b(UART_Package pkg);
 #endif
