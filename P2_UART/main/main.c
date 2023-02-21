@@ -7,6 +7,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include "p2_packagedata.h"
 
 #define MASTER 2
 #define SLAVE 1
@@ -57,19 +58,25 @@ void toggle_led_state(uint8_t *led_state)
 void app_main()
 {
     uint8_t led_state = 0;
+    UART_Package pkgs; 
+    char msgpacks[N_PACKAGES][MSG_TAM_STR];
+    pkgs = (UART_Package *)malloc(4 * sizeof(UART_Package));
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     uartInit1();
     uartInit(0, BAUD_RATE, 8, eParityDis, eStop, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
     uart_flush(1);
     uart_flush(0);
-    char msgpack0[24];
+    
     while (1)
     {
-        int len = uart_read_bytes(UART_NUM_1, msgpack0, 24, pdMS_TO_TICKS(100));
-        uartPuts(0, msgpack0);
-        uartPuts(0, "\n");
+        int len = uart_read_bytes(UART_NUM_1, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
+        StringToPackage(pkgs[0],msgpacks[0]);
+        showPackage(pkgs[0]);
+        //uartPuts(0, msgpacks[0]);
+        //uartPuts(0, "\n");
         vTaskDelay(pdMS_TO_TICKS(3000));
+
         //     int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
         //     if (len == 2 && command[0] == '1' && command[1] == '0')
         //     {
