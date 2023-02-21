@@ -60,34 +60,30 @@ void app_main()
     uint8_t led_state = 0;
     UART_Package *pkgs = malloc(4 * sizeof(UART_Package));
     char msgpacks[N_PACKAGES][MSG_TAM_STR];
-    
+
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     uartInit1();
     uartInit(0, BAUD_RATE, 8, eParityDis, eStop, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
     uart_flush(1);
     uart_flush(0);
-    
+
     while (1)
     {
         // 1) Leer el paquete en forma de cadena
-
-        // 2) Convertir cadena a un paquete y guardar
-
-        //3) Recalcular el crc32 y almacenarlo en el paquete
-
-        //4) Comparar crc32s: 
-        // iguales -> fue recibido correctamente
-        //      ejecutar accion dado el comando
-        //      actualizar paquete
-        //      devolver cadena
-        // distintos -> imprimir que no se recibio correctamente
-
         int len = uart_read_bytes(UART_NUM_1, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
-        StringToPackage(&pkgs[0],msgpacks[0]);
-        //showPackage(pkgs[0]);
-        //uartPuts(0, msgpacks[0]);
-        //uartPuts(0, "\n");
+        // 2) Convertir cadena a un paquete y guardar
+        StringToPackage(&pkgs[0], msgpacks[0]);
+        // 3) Comparar crc32s:
+        //  iguales -> fue recibido correctamente
+        //       ejecutar accion dado el comando
+        //       actualizar paquete
+        //       devolver cadena
+        //  distintos -> imprimir que no se recibio correctamente
+
+        // showPackage(pkgs[0]);
+        // uartPuts(0, msgpacks[0]);
+        // uartPuts(0, "\n");
         vTaskDelay(pdMS_TO_TICKS(3000));
 
         //     int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
