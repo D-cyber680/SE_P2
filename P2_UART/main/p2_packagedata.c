@@ -50,3 +50,23 @@ void StringToPackage(UART_Package *pack, char *msg_pack){
     }
     createPackage(pack,info[0],info[1],info[2],info[3],info[4],info[5],info[6],info[7]);
 }
+
+void showPackage(UART_Package pkg)
+{
+    uartPuts(0, "\n");
+    ESP_LOGI("Header", "0x%01X\n", pkg.header);
+    ESP_LOGI("Command", "0x%01X\n", pkg.command);
+    ESP_LOGI("Length", "0x%01X\n", pkg.length);
+    if (pkg.length > 0)
+    {
+        ESP_LOGI("data0", "0x%01x\n", pkg.data[0]);
+        ESP_LOGI("data0", "0x%01x\n", pkg.data[1]);
+        ESP_LOGI("data1", "0x%01x\n", pkg.data[2]);
+        ESP_LOGI("data2", "0x%01x\n", pkg.data[3]);
+    }else
+    {
+        ESP_LOGI("dataS", "NULL\n");
+    }
+    ESP_LOGI("End", "0x%01X\n", pkg.end);
+    ESP_LOGI("CRC32", "0x%08X\n", pkg.crc32);
+}
