@@ -41,11 +41,6 @@ bool uartKbhit(uart_port_t uart_num)
 char uartGetchar(uart_port_t uart_num)
 {
     char c;
-    // Wait for a received byte
-    while(!uartKbhit(uart_num))
-    {
-        delayMs(10);
-    }
     // read byte, no wait
     uart_read_bytes(uart_num, &c, sizeof(c), 0);
 
@@ -234,8 +229,8 @@ void myItoa(uint32_t number, char *str, uint8_t base){
     *(str+i)=0;
 }
 
-uint16_t myAtoi(char *str){
-    uint16_t data=0;
+uint8_t myAtoi(char *str){
+    uint8_t data=0;
     int i=0;
     char c=0; //toma el primer Caracter
     c=*(str+i);

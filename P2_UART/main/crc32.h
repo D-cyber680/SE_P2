@@ -1,12 +1,12 @@
 #ifndef _MY_CRC32_H_
 #define _MY_CRC32_H_
 #include <inttypes.h>
+
 #define CRC32_INITIAL_VALUE 0xFFFFFFFF
 #define CRC32_POLYNOMIAL_REPRESENTATION 0x04C11DB7
 
 // lookup table for CRC32
-static const unsigned int crc32_table[] =
-    {
+static const uint32_t crc32_table[] = {
         0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9,
         0x130476dc, 0x17c56b6b, 0x1a864db2, 0x1e475005,
         0x2608edb8, 0x22c9f00f, 0x2f8ad6d6, 0x2b4bcb61,
@@ -72,7 +72,7 @@ static const unsigned int crc32_table[] =
         0xafb010b1, 0xab710d06, 0xa6322bdf, 0xa2f33668,
         0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4};
 
-//Calculates CRC32 value for a data chunk
+// Calculates CRC32 value for a data chunk
 uint32_t calc_crc32(uint8_t *data, uint32_t size);
 int checkCrc32(uint32_t dato, char *cad);
 

@@ -49,6 +49,6 @@ void uartGotoxy(uart_port_t uart_num, uint8_t x, uint8_t y);
 // Utils
 void orderArray(char *str, uint8_t i);
 void myItoa(uint32_t number, char* str, uint8_t base) ;
-uint16_t myAtoi(char *str);
+uint8_t myAtoi(char *str);
 
 #endif
