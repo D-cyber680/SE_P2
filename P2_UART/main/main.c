@@ -132,6 +132,7 @@ void app_main()
             PackageToString(pkg, feedBackMsg);
             showPackage(pkg);
             uart_write_bytes(UART_NUM_1, feedBackMsg, strlen(feedBackMsg));
+            memset(feedBackMsg, '\0', sizeof(feedBackMsg));
             vTaskDelay(pdMS_TO_TICKS(2000));
         }
         // showPackage(pkgs[0]);
