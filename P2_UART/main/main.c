@@ -48,16 +48,19 @@ void app_main()
     {
         PackageToString(pkgs[i], msgpacks);
         uart_write_bytes(UART_NUM1, msgpacks, strlen(msgpacks));
-        uart_read_bytes(UART_NUM1, feedBackPack, 24, pdMS_TO_TICKS(100));
-        uartPuts(0, feedBackPack);
-        uartClrScr(0);
+        int len = uart_read_bytes(UART_NUM1, feedBackPack, 24, pdMS_TO_TICKS(100));
+        if (len)
+        {
+            uartPuts(0, feedBackPack);
+            uartClrScr(0);
+        }
 
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
+        memset(msgpacks, '\0', sizeof(msgpacks));
+        uart_flush(1);
+        uart_flush(0);
         offsetY += 10;
         i++;
         i = i % 4;
-        uart_flush(1);
-        uart_flush(0);
     }
 }
