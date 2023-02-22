@@ -22,7 +22,7 @@ uint32_t get_time_in_seconds()
     char secs[20];
     sprintf(secs, "timestamp=%d", xTaskGetTickCount() / configTICK_RATE_HZ);
     uartPuts(0, secs);
-    uartPuts(1, secs);
+    //uartPuts(1, secs);
     return xTaskGetTickCount() / configTICK_RATE_HZ;
 }
 
@@ -58,7 +58,7 @@ void app_main()
 {
     uint8_t led_state = 0;
     UART_Package pkg;
-    char msgpacks[N_PACKAGES][MSG_TAM_STR];
+    char msgpacks[MSG_TAM_STR];
     char feedBackMsg[MSG_TAM_STR];
 
     gpio_reset_pin(LED);
@@ -71,16 +71,16 @@ void app_main()
     while (1)
     {
         // 1) Leer el paquete en forma de cadena
-        int len = uart_read_bytes(UART_NUM_1, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
+        int len = uart_read_bytes(UART_NUM_1, msgpacks, MSG_TAM_STR, pdMS_TO_TICKS(100));
         // 2) Convertir cadena a un paquete y guardar
-        StringToPackage(&pkg, msgpacks[0]);
+        StringToPackage(&pkg, msgpacks);
         // 3) Comparar crc32s:
         //  iguales -> fue recibido correctamente
         //       ejecutar accion dado el comando
         //       actualizar paquete
         //       devolver cadena
         //  distintos -> imprimir que no se recibio correctamente
-        if (checkCrc32(pkg.crc32, msgpacks[0]))
+        if (checkCrc32(pkg.crc32, msgpacks))
         {
             showPackage(pkg); // mostrar pack
             switch (pkg.command)
@@ -88,7 +88,7 @@ void app_main()
             case 0x10:
                 //uartPuts(0, "comando 0x10 recibido");
                 //uartPuts(0, "\n");
-                ESP_LOGI("timestamp", "\ntimestamp = %d\n", get_time_in_seconds());
+                //ESP_LOGI("timestamp", "\ntimestamp = %d\n", get_time_in_seconds());
                 pkg.length = 4;
                 pkg.data[0] = 0;
                 pkg.data[1] = 0;
@@ -136,33 +136,6 @@ void app_main()
         // uartPuts(0, msgpacks[0]);
         // uartPuts(0, "\n");
 
-        //     int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
-        //     if (len == 2 && command[0] == '1' && command[1] == '0')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x10");
-        //         uartGotoxy(0, 5, 5);
-        //         get_time_in_seconds();
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '1')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x11");
-        //         uartGotoxy(0, 5, 5);
-        //         send_led_state(led_state);
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '2')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x12");
-        //         uartGotoxy(0, 5, 5);
-        //         send_temp();
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '3')
-        //     {
-        //         uartClrScr(0);
-        //         toggle_led_state(&led_state);
-        //         uartPuts(0, "Comando: 0x13");
-        //     }
+ 
     }
 }
