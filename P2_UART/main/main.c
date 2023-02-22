@@ -26,7 +26,7 @@ void app_main()
     char led_state[20];
     char temperature[20];
     char msgpacks[4][MSG_TAM_STR];
-    char feedBackPack[MSG_TAM_STR];
+    char feedBackPack[24];
 
     uartInit1();
     uartInit(0, 115200, 8, eStop, eParityEven, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
@@ -45,7 +45,7 @@ void app_main()
     {
         PackageToString(pkgs[i], msgpacks[i]);
         uart_write_bytes(UART_NUM1, msgpacks[i], strlen(msgpacks[i]));
-        uart_read_bytes(UART_NUM1, feedBackPack, MSG_TAM_STR, pdMS_TO_TICKS(100));
+        uart_read_bytes(UART_NUM1, feedBackPack, 24, pdMS_TO_TICKS(100));
         uartPuts(0, feedBackPack);
         uartPuts(0, "\n");
 
