@@ -14,53 +14,69 @@
 #define SLAVE 1
 #define MODE SLAVE
 
-/*
-#define TXD_PIN (GPIO_NUM_17)
-#define RXD_PIN (GPIO_NUM_16)
-#define LED (GPIO_NUM_2)
-*/
 #define BAUD_RATE 115200
 // F comando 0x10
-uint32_t get_time_in_seconds()
+uint32_t get_time_in_seconds(UART_Package *pack)
 {
     // enviar devuelta
     char secs[20];
+    char msg_pack[MSG_TAM_STR];
+    uint8_t t= xTaskGetTickCount() / configTICK_RATE_HZ;
     sprintf(secs, "timestamp=%d", xTaskGetTickCount() / configTICK_RATE_HZ);
+
+    createPackage(pack, 0x5B, 0x10, 1, 0, 0, 0, t, 0xB2);
+    PackageToString(pack, msg_pack);
+    uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
+    //createPackage(&pkgs[1], 0x5A, 0x11, 0, 0, 0, 0, 0, 0xB2);
     uartPuts(0, secs);
-    uartPuts(1, secs);
     return xTaskGetTickCount() / configTICK_RATE_HZ;
 }
 
 // F. cmd. 0x11
-uint8_t send_led_state(uint8_t led_state)
+uint8_t send_led_state(UART_Package *pack, uint8_t led_state)
 {
     char led_cad[20];
+    char msg_pack[MSG_TAM_STR];
     sprintf(led_cad, "led=%d", led_state);
+
+    createPackage(pack, 0x5B, 0x11, 1, 0, 0, 0, led_state, 0xB2);
+    PackageToString(pack, msg_pack);
+    uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
     uartPuts(0, led_cad);
-    uartPuts(1, led_cad);
+    //uartPuts(2, led_cad);
     return led_state;
 }
 // F. comando 0x12
-void send_temp(void)
+void send_temp(UART_Package *pack)
 {
     // uint8_t num = rand() % 100;
     char cad[20];
+    char msg_pack[MSG_TAM_STR];
     sprintf(cad, "temp=45");
+
+    createPackage(pack, 0x5B, 0x12, 1, 0, 0, 0, 45, 0xB2);
+    PackageToString(pack, msg_pack);
+    uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
     uartPuts(0, cad);
-    uartPuts(1, cad);
+    //uartPuts(2, cad);
 }
 
 // F comando 0x13
-void toggle_led_state(uint8_t *led_state)
+void toggle_led_state(UART_Package *pack, uint8_t *led_state)
 {
+    char msg_pack[MSG_TAM_STR];
     *led_state == 1 ? (*led_state = 0) : (*led_state = 1);
     gpio_set_level(LED, *led_state);
+    createPackage(pack, 0x5B, 0x13, 0, 0, 0, 0, 0, 0xB2);
+    PackageToString(pack, msg_pack);
+    uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
 }
 
 void app_main()
 {
-    uint8_t led_state = 0;
-    UART_Package *pkgs = malloc(4 * sizeof(UART_Package));
+    int len;
+    uint8_t led_state = 1;
+    UART_Package *pkgs = malloc(5 * sizeof(UART_Package));
     char msgpacks[N_PACKAGES][MSG_TAM_STR];
 
     gpio_reset_pin(LED);
@@ -76,51 +92,79 @@ void app_main()
     while (1)
     {
         // 1) Leer el paquete en forma de cadena
-        int len = uart_read_bytes(UART2_PORT, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
+        len = uart_read_bytes(UART2_PORT, msgpacks[0], MSG_TAM_STR, pdMS_TO_TICKS(100));
         // 2) Convertir cadena a un paquete y guardar
         StringToPackage(&pkgs[0], msgpacks[0]);
         // 3) Comparar crc32s:
-        if(checkCrc32(pkgs[0].crc32, msgpacks[0])==1) showPackage(pkgs[0]);
-        else uartPuts(0, "ERROR");
         //  iguales -> fue recibido correctamente
         //       ejecutar accion dado el comando
         //       actualizar paquete
         //       devolver cadena
-        //  distintos -> imprimir que no se recibio correctamente
+        if(checkCrc32(pkgs[0].crc32, msgpacks[0])==1){
+            //showPackage(pkgs[0]);
+            switch (pkgs[0].command)
+            {
+            case 0x10:
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x10");
+                uartGotoxy(0, 5, 5);
+                get_time_in_seconds(&pkgs[1]);
+                break;
+            case 0x11:
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x11");
+                uartGotoxy(0, 5, 5);
+                send_led_state(&pkgs[2],led_state);
+                break;
+            case 0x12:
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x12");
+                uartGotoxy(0, 5, 5);
+                send_temp(&pkgs[3]);
+                break;
+            case 0x13:
+                uartClrScr(0);
+                toggle_led_state(&pkgs[4],&led_state);
+                uartGotoxy(0, 5, 5);
+                uartPuts(0, "Comando: 0x13");
+                break;
+            default:
+                break;
+            }
 
+        }
+        //  distintos -> imprimir que no se recibio correctamente
+        else uartPuts(0, "\nError");
         //showPackage(pkgs[0]);
-        
         // uartPuts(0, msgpacks[0]);
         // uartPuts(0, "\n");
         vTaskDelay(pdMS_TO_TICKS(3000));
-
-        //     int len = uart_read_bytes(UART_NUM_1, command, 3, pdMS_TO_TICKS(100));
-        //     if (len == 2 && command[0] == '1' && command[1] == '0')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x10");
-        //         uartGotoxy(0, 5, 5);
-        //         get_time_in_seconds();
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '1')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x11");
-        //         uartGotoxy(0, 5, 5);
-        //         send_led_state(led_state);
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '2')
-        //     {
-        //         uartClrScr(0);
-        //         uartPuts(0, "Comando: 0x12");
-        //         uartGotoxy(0, 5, 5);
-        //         send_temp();
-        //     }
-        //     else if (len == 2 && command[0] == '1' && command[1] == '3')
-        //     {
-        //         uartClrScr(0);
-        //         toggle_led_state(&led_state);
-        //         uartPuts(0, "Comando: 0x13");
-        //     }
     }
 }
+
+/*            
+            if (pkgs[0].command==0x10){
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x10");
+                uartGotoxy(0, 5, 5);
+                get_time_in_seconds();
+            }
+            else if(pkgs[0].command==0x11){
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x11");
+                uartGotoxy(0, 5, 5);
+                send_led_state(led_state);
+            }
+            else if(pkgs[0].command==0x12){
+                uartClrScr(0);
+                uartPuts(0, "Comando: 0x12");
+                uartGotoxy(0, 5, 5);
+                send_temp();
+            }
+            else if(pkgs[0].command==0x13){
+                uartClrScr(0);
+                toggle_led_state(&led_state);
+                uartGotoxy(0, 5, 5);
+                uartPuts(0, "Comando: 0x13");
+            }
+*/
