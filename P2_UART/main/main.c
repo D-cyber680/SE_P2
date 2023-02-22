@@ -29,7 +29,7 @@ void app_main()
     char feedBackPack[24];
     volatile uint8_t offsetX = 0;
     volatile uint8_t offsetY = 0;
-    
+
     uartInit1();
     uartInit(0, 115200, 8, eStop, eParityEven, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
     uart_flush(1);
@@ -50,13 +50,14 @@ void app_main()
         uart_write_bytes(UART_NUM1, msgpacks, strlen(msgpacks));
         uart_read_bytes(UART_NUM1, feedBackPack, 24, pdMS_TO_TICKS(100));
         uartPuts(0, feedBackPack);
-        uartGotoxy(0, offsetX, offsetY);
+        uartClrScr(0);
 
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
 
         offsetY += 10;
         i++;
         i = i % 4;
-
+        uart_flush(1);
+        uart_flush(0);
     }
 }
