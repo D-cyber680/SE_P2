@@ -81,6 +81,7 @@ void app_main()
 
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
+    gpio_set_level(LED, led_state);
     //uartInit1();
     //uartInit(0, BAUD_RATE, 8, eParityDis, eStop, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
     //uart_flush(1);
