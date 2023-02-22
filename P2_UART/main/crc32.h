@@ -74,5 +74,5 @@ static const uint32_t crc32_table[] = {
 
 // Calculates CRC32 value for a data chunk
 uint32_t calc_crc32(uint8_t *data, uint32_t size);
-
+uint8_t checkCrc32(uint32_t dato, char *str);
 #endif

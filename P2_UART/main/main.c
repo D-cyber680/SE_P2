@@ -8,6 +8,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include "p2_packagedata.h"
+#include "crc32.h"
 
 #define MASTER 2
 #define SLAVE 1
@@ -80,7 +81,36 @@ void app_main()
         //       actualizar paquete
         //       devolver cadena
         //  distintos -> imprimir que no se recibio correctamente
+        if(checkCrc32(pkgs[0].crc32, msgpacks[0]))
+        {
+            showPackage(pkgs[0]); // mostrar pack
+            switch (pkgs[0].command)
+            {
+            case 0x10:
+                uartPuts(0, "comando 0x10 recibido");
+                get_time_in_seconds();
+                break;
+            case 0x11:
+                uartPuts(0, "comando 0x11 recibido");
+                send_led_state(led_state);
 
+                break;
+            case 0x12:
+                uartPuts(0, "comando 0x12 recibido");
+                send_temp();
+                break;
+            case 0x13:
+                uartPuts(0, "comando 0x13 recibido");
+                toogle_led_state(&led_state);
+                break;
+            default:
+                ESP_LOGE("Error command", "Comando no enontrado \n");
+                break;
+            }                     // 
+        }else
+        {
+            uartPuts(0, "Error");
+        }
         // showPackage(pkgs[0]);
         // uartPuts(0, msgpacks[0]);
         // uartPuts(0, "\n");
