@@ -25,7 +25,7 @@ void app_main()
     char secs[20];
     char led_state[20];
     char temperature[20];
-    char msgpacks[MSG_TAM_STR];
+    char msgpacks[24];
     char feedBackPack[24];
     volatile uint8_t offsetX = 0;
     volatile uint8_t offsetY = 0;
