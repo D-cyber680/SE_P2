@@ -2,7 +2,7 @@
 #define _P2_PACKAGEDATA_H_
 #include <inttypes.h>
 #include "esp_log.h"
-#define N_PACKAGES 4*2
+#define N_PACKAGES 4
 #define PAYLOAD_LEN 4
 #define BUFFER_SIZE 256
 #define BYTES_PER_PACKAGE 8
