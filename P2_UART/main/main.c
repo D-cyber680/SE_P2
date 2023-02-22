@@ -27,7 +27,6 @@ uint32_t get_time_in_seconds(UART_Package *pack)
     createPackage(pack, 0x5B, 0x10, 1, 0, 0, 0, t, 0xB2);
     PackageToString(pack, msg_pack);
     uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
-    //createPackage(&pkgs[1], 0x5A, 0x11, 0, 0, 0, 0, 0, 0xB2);
     uartPuts(0, secs);
     return xTaskGetTickCount() / configTICK_RATE_HZ;
 }
@@ -43,7 +42,6 @@ uint8_t send_led_state(UART_Package *pack, uint8_t led_state)
     PackageToString(pack, msg_pack);
     uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
     uartPuts(0, led_cad);
-    //uartPuts(2, led_cad);
     return led_state;
 }
 // F. comando 0x12
@@ -58,7 +56,6 @@ void send_temp(UART_Package *pack)
     PackageToString(pack, msg_pack);
     uart_write_bytes(UART2_PORT, msg_pack, strlen(msg_pack));
     uartPuts(0, cad);
-    //uartPuts(2, cad);
 }
 
 // F comando 0x13
@@ -82,9 +79,7 @@ void app_main()
     gpio_reset_pin(LED);
     gpio_set_direction(LED, GPIO_MODE_OUTPUT);
     gpio_set_level(LED, led_state);
-    //uartInit1();
-    //uartInit(0, BAUD_RATE, 8, eParityDis, eStop, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
-    //uart_flush(1);
+
     uartInit(PC_UART_PORT,115200,8,0,1,PC_UART_TX_PIN,PC_UART_RX_PIN);
     uartInit(UART2_PORT,115200,8,0,1,UART2_TX_PIN,UART2_RX_PIN);
     uart_flush(0);
@@ -136,36 +131,6 @@ void app_main()
         }
         //  distintos -> imprimir que no se recibio correctamente
         else uartPuts(0, "\nError");
-        //showPackage(pkgs[0]);
-        // uartPuts(0, msgpacks[0]);
-        // uartPuts(0, "\n");
         vTaskDelay(pdMS_TO_TICKS(3000));
     }
 }
-
-/*            
-            if (pkgs[0].command==0x10){
-                uartClrScr(0);
-                uartPuts(0, "Comando: 0x10");
-                uartGotoxy(0, 5, 5);
-                get_time_in_seconds();
-            }
-            else if(pkgs[0].command==0x11){
-                uartClrScr(0);
-                uartPuts(0, "Comando: 0x11");
-                uartGotoxy(0, 5, 5);
-                send_led_state(led_state);
-            }
-            else if(pkgs[0].command==0x12){
-                uartClrScr(0);
-                uartPuts(0, "Comando: 0x12");
-                uartGotoxy(0, 5, 5);
-                send_temp();
-            }
-            else if(pkgs[0].command==0x13){
-                uartClrScr(0);
-                toggle_led_state(&led_state);
-                uartGotoxy(0, 5, 5);
-                uartPuts(0, "Comando: 0x13");
-            }
-*/
