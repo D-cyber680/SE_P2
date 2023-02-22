@@ -37,14 +37,14 @@ uint8_t send_led_state(uint8_t led_state)
     return led_state;
 }
 // F. comando 0x12
-void send_temp(void)
+uint8_t send_temp(void)
 {
     // uint8_t num = rand() % 100;
     char cad[20];
     sprintf(cad, "temp=45");
     uartPuts(0, cad);
     //uartPuts(1, cad);
-
+    return 45;
 }
 
 // F comando 0x13
@@ -110,7 +110,7 @@ void app_main()
                 pkg.data[0] = 0;
                 pkg.data[1] = 0;
                 pkg.data[2] = 0;
-                pkg.data[3] = 45;
+                pkg.data[3] = send_temp();
                 send_temp();
                 break;
             case 0x13:
