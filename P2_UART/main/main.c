@@ -47,6 +47,8 @@ void app_main()
 
     while (1)
     {
+        
+        memset(msgpack0, 0, MSG_TAM_STR);
         PackageToString(pkgs[0], msgpack0);
         uart_write_bytes(UART2_PORT, msgpack0, strlen(msgpack0));
         //uartPuts(0, msgpack0);
@@ -59,12 +61,15 @@ void app_main()
             uartClrScr(0);
             uartGotoxy(0, 5, 5);
             sprintf(secs, "timestamp=%d", pkgs[4].data[3]);
-            uartPuts(0, secs);
+            uart_flush(0);
+            uart_flush(2);
+            uart_write_bytes(PC_UART_PORT, secs, strlen(secs));
+            //uartPuts(0, secs);
         }
         else uartPuts(0,"ERRORT");
-        
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
 /*********/
+        memset(msgpack0, 0, MSG_TAM_STR);
         PackageToString(pkgs[1], msgpack0);
         uart_write_bytes(UART2_PORT, msgpack0, strlen(msgpack0));
         // 1) Leer el paquete en forma de cadena
@@ -75,13 +80,16 @@ void app_main()
             uartClrScr(0);
             uartGotoxy(0, 5, 5);
             sprintf(led_state, "led=%d", pkgs[5].data[3]);
-            uartPuts(0, led_state);
+            //uartPuts(0, led_state);
+            uart_flush(0);
+            uart_flush(2);
+            uart_write_bytes(PC_UART_PORT, led_state, strlen(led_state));
         }
         else uartPuts(0,"ERRORLed\n");
-        
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
 
 /*********/
+        memset(msgpack0, 0, MSG_TAM_STR);
         PackageToString(pkgs[2], msgpack0);
         uart_write_bytes(UART2_PORT, msgpack0, strlen(msgpack0));
         // 1) Leer el paquete en forma de cadena
@@ -92,12 +100,15 @@ void app_main()
             uartClrScr(0);
             uartGotoxy(0, 5, 5);
             sprintf(temperature, "temp=%d", pkgs[6].data[3]);
-            uartPuts(0, temperature);
+            //uartPuts(0, temperature);
+            uart_flush(0);
+            uart_flush(2);
+            uart_write_bytes(PC_UART_PORT, temperature, strlen(temperature));
         }
         else uartPuts(0,"ERRORC");
-        
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
 /******/
+        memset(msgpack0, 0, MSG_TAM_STR);
         PackageToString(pkgs[3], msgpack0);
         uart_write_bytes(UART2_PORT, msgpack0, strlen(msgpack0));
         // 1) Leer el paquete en forma de cadena
@@ -107,40 +118,11 @@ void app_main()
         if(checkCrc32(pkgs[7].crc32, msgpacks[3])==1){
             uartClrScr(0);
             uartGotoxy(0, 5, 5);
+            uart_flush(0);
+            uart_flush(2);
             uartPuts(0, "Invertimos LED");
         }
         else uartPuts(0,"ERRORLED");
-        
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-        // uart_write_bytes(UART_NUM_1, "10", 2);
-        // uart_read_bytes(1, secs, (READ_BUF_SIZE), 20 / portTICK_RATE_MS);
-        // uartClrScr(0);
-        // uartGotoxy(0, 5, 5);
-        // uartPuts(0, secs);
-        // vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-        // uartClrScr(0);
-        // uart_write_bytes(UART_NUM_1, "11", 2);
-        // uart_read_bytes(1, led_state, (READ_BUF_SIZE), 20 / portTICK_RATE_MS);
-        // uartGotoxy(0, 6, 5);
-        // uartPuts(0, led_state);
-        // // uartPuts(0, "Sended: 0x11");
-
-        // vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-        // uartClrScr(0);
-        // uart_write_bytes(UART_NUM_1, "12", 2);
-        // uart_read_bytes(1, temperature, (READ_BUF_SIZE), 20 / portTICK_RATE_MS);
-        // uartGotoxy(0, 7, 5);
-        // uartPuts(0, temperature);
-        // // uartPuts(0, "Sended: 0x12");
-        // vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-        // uart_write_bytes(UART_NUM_1, "13", 2);
-        // uartClrScr(0);
-        // uartGotoxy(0, 8, 5);
-        // uartPuts(0, "0x13: Invertimos LED");
-        // vTaskDelay(pdMS_TO_TICKS(INTERVAL));
     }
 }
