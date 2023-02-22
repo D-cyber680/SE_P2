@@ -21,11 +21,12 @@
 
 void app_main()
 {
+    uint8_t i = 0; 
     char secs[20];
     char led_state[20];
     char temperature[20];
     char msgpacks[4][MSG_TAM_STR];
-    char feebackpack[MSG_TAM_STR];
+    char feedBackPack[MSG_TAM_STR];
 
     uartInit1();
     uartInit(0, 115200, 8, eStop, eParityEven, UART_TX_PIN0, UART_RX_PIN0); // uart_num, baudrate,  size,  parity, stop,  txPin,  rxPin)
@@ -42,30 +43,17 @@ void app_main()
 
     while (1)
     {
-        PackageToString(pkgs[0], msgpacks[0]);
-        uart_write_bytes(UART_NUM1, msgpacks[0], strlen(msgpacks[0]));
-        uartPuts(0, msgpacks[0]);
+        PackageToString(pkgs[i], msgpacks[i]);
+        uart_write_bytes(UART_NUM1, msgpacks[i], strlen(msgpacks[i]));
+        uart_read_bytes(UART_NUM1, feedBackPack, MSG_TAM_STR, pdMS_TO_TICKS(100));
+        uartPuts(0, feedBackPack);
         uartPuts(0, "\n");
+
+
         vTaskDelay(pdMS_TO_TICKS(INTERVAL));
 
-        PackageToString(pkgs[1], msgpacks[1]);
-        uart_write_bytes(UART_NUM1, msgpacks[1], strlen(msgpacks[1]));
-        uartPuts(0, msgpacks[1]);
-        uartPuts(0, "\n");
-        vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
-        PackageToString(pkgs[2], msgpacks[2]);
-        uart_write_bytes(UART_NUM1, msgpacks[2], strlen(msgpacks[2]));
-        uartPuts(0, msgpacks[2]);
-        uartPuts(0, "\n");
-        vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-        
-        PackageToString(pkgs[3], msgpacks[3]);
-        uart_write_bytes(UART_NUM1, msgpacks[3], strlen(msgpacks[3]));
-        uartPuts(0, msgpacks[3]);
-        uartPuts(0, "\n");
-        vTaskDelay(pdMS_TO_TICKS(INTERVAL));
-
+        i++;
+        i = i % 4;
         // uart_write_bytes(UART_NUM_1, "10", 2);
         // uart_read_bytes(1, secs, (READ_BUF_SIZE), 20 / portTICK_RATE_MS);
         // uartClrScr(0);

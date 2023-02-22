@@ -1,6 +1,7 @@
 #ifndef _P2_PACKAGEDATA_H_
 #define _P2_PACKAGEDATA_H_
 #include <inttypes.h>
+#include "esp_log.h"
 #define N_PACKAGES 4*2
 #define PAYLOAD_LEN 4
 #define BYTES_PER_PACKAGE 8
